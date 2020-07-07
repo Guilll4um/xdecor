@@ -78,15 +78,29 @@ function plate.timer(pos)
 					local node = nil
 					if  math.abs(doors_pos[i].x - pos.x) == 2   or math.abs(doors_pos[i].z - pos.z) == 2  then
 						local node = minetest.get_node(doors_pos[i])
+						local door = doors.get(doors_pos[i])
 						is_to_toggle = false 
-						-- only toogle door facing the pplate when they are 2 node far.
-						if (node.param2 == 1 and doors_pos[i].x - pos.x > 0)  
-						or (node.param2 == 3 and doors_pos[i].x - pos.x < 0)  
-						or (node.param2 == 0 and doors_pos[i].z - pos.z > 0)  
-						or (node.param2 == 2 and doors_pos[i].z - pos.z < 0)  
-						then 
-							is_to_toggle = true 
+
+						-- only toogle door facing (when closed) the pplate when they are 2 node far.
+						if door:state() then
+							if (node.param2 == 2 and doors_pos[i].x - pos.x > 0)  
+							or (node.param2 == 0 and doors_pos[i].x - pos.x < 0)  
+							or (node.param2 == 1 and doors_pos[i].z - pos.z > 0)  
+							or (node.param2 == 3 and doors_pos[i].z - pos.z < 0)  
+							then 
+								is_to_toggle = true 
+							end
+						else
+							if (node.param2 == 1 and doors_pos[i].x - pos.x > 0)  
+							or (node.param2 == 3 and doors_pos[i].x - pos.x < 0)  
+							or (node.param2 == 0 and doors_pos[i].z - pos.z > 0)  
+							or (node.param2 == 2 and doors_pos[i].z - pos.z < 0)  
+							then 
+								is_to_toggle = true 
+							end
 						end
+
+
 					end
 					if is_to_toggle then door_toggle(pos, doors_pos[i], player) end
 				end
