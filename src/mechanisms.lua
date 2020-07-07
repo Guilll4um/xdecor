@@ -13,17 +13,17 @@ function plate_closing_after(door,player_name,actuator,pos_actuator)
 		local player = minetest.get_player_by_name(player_name)
 
 		-- calculate player distance from the pressure plate
-		local dist = 9 --  player not online  == far of the pplate 
+		local dist_square = 9 --  player not online  == far of the pplate 
 		if player then
 			local ppos = player:get_pos()
 			local dx = ppos.x - pos_actuator.x
 			local dy = ppos.y - pos_actuator.y
 			local dz = ppos.z - pos_actuator.z
-			dist = math.sqrt( math.pow(dx,2) + math.pow(dy,2) + math.pow(dz,2) )
+			dist_square = dx*dx + dy*dy + dz*dz
 		end
 
 		-- prevent the door to close if player still on the pressure plate
-		if dist > 0.8 then
+		if dist_square > 0.64 then -- = 0.8²
 			if minetest.get_node(pos_actuator).name:sub(-3) == "_on" then
 				minetest.set_node(pos_actuator,
 					{name = actuator.name, param2 = actuator.param2})
@@ -99,8 +99,6 @@ function plate.timer(pos)
 								is_to_toggle = true 
 							end
 						end
-
-
 					end
 					if is_to_toggle then door_toggle(pos, doors_pos[i], player) end
 				end
